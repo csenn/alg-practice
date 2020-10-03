@@ -1,33 +1,46 @@
+import unittest
+
 class Node:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, val):
+        self.val = val
         self.next = None
 
 class Stack:
     def __init__(self):
-        self.head = None
+        self.head = Node(None)
 
-    def add(self, data):
-        node = Node(data)
-        node.next = self.head
-        self.head = node
+    def add(self, val):
+        next_node = Node(val)
+        next_node.next = self.head
+        self.head = next_node
 
     def pop(self):
-        if not self.head or not self.head.next:
+        if self.head.val == None:
+            print("Nothing in stack")
             return None
 
+        ret_val = self.head.val
         self.head = self.head.next
+        return ret_val
+
+    def peek(self):
+        return self.head.val
+
+class TestStack(unittest.TestCase):
+
+    def test_stack(self):
+
+        stack = Stack()
+        stack.add(3)
+        self.assertEqual(stack.peek(), 3)
+        stack.add(7)
+        self.assertEqual(stack.peek(), 7)
+
+        self.assertEqual(stack.pop(), 7)
+        self.assertEqual(stack.peek(), 3)
+
+        self.assertEqual(stack.pop(), 3)
+        self.assertEqual(stack.pop(), None)
 
 if __name__ == '__main__':
-    stack = Stack()
-
-    stack.add(1)
-    print stack.head.data
-    stack.add(2)
-    print stack.head.data
-    stack.pop()
-    print stack.head.data
-    stack.add(4)
-    print stack.head.data
-
-
+    unittest.main()

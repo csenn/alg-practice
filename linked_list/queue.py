@@ -1,56 +1,67 @@
+import unittest
+
 class Node:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, val):
+        self.val = val
         self.next = None
-        self.prev = None
+
+# 1 -> 2    -> 3 -> 4
+# 1 <- 2 <- 3 <- 4
+
+# 4
+# 3 <- 4
+# 2 <- 3 <- 4
 
 class Queue:
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.front = None
+        self.back = None
 
-    def enqueue(self, data):
-        node = Node(data)
-        if self.head:
-            node.next = self.head
-            node.next.prev = node
+    def queue(self, val):
+        next_node = Node(val)
+
+        if not self.front:
+            self.front = next_node
+            self.back = next_node
         else:
-            self.tail = node
-        self.head = node
+            self.back.next = next_node
+            self.back = next_node
 
     def dequeue(self):
-        if self.tail:
-            temp = self.tail
-            if self.tail.prev:
-                self.tail = self.tail.prev
-                self.tail.next = None
-            else:
-                self.tail = None
-            return temp
+        if self.front == None:
+            return None
 
-    def print_me(self):
-        nodes = []
-        node = self.head
-        while node:
-            nodes.append(node.data)
-            node = node.next
-        print ' '.join(map(str, nodes))
+        ret_val = self.front.val
 
+        if self.front == self.back:
+            self.front = None
+            self.back = None
+        else:
+            self.front = self.front.next
+
+        return ret_val
+
+    def peek(self):
+        return self.front.val
+
+class TestQueue(unittest.TestCase):
+
+    def test_stack(self):
+
+        q = Queue()
+        q.queue(3)
+        self.assertEqual(q.peek(), 3)
+        q.queue(7)
+        self.assertEqual(q.peek(), 3)
+        q.queue(5)
+        self.assertEqual(q.peek(), 3)
+
+        self.assertEqual(q.dequeue(), 3)
+        self.assertEqual(q.peek(), 7)
+
+        self.assertEqual(q.dequeue(), 7)
+        self.assertEqual(q.dequeue(), 5)
+        self.assertEqual(q.dequeue(), None)
 
 if __name__ == '__main__':
-    q = Queue()
-    q.enqueue(1)
-    q.print_me()
-    q.enqueue(2)
-    q.print_me()
-    q.enqueue(3)
-    q.print_me()
-    print 'deqeue', q.dequeue().data
-    q.print_me()
-    print 'deqeue', q.dequeue().data
-    q.enqueue(5)
-    q.print_me()
-    q.enqueue(7)
-    q.print_me()
-    print 'deqeue', q.dequeue().data
-    q.print_me()
+    unittest.main()
